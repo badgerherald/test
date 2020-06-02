@@ -15,7 +15,8 @@ Vagrant.configure("2") do |config|
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts    
   SHELL
 
-  ## Install Puppet
+  ## Provision
+  config.vm.provision :shell, path: "server/provision-ssl.sh", args: "192.168.19.69", privileged: false
   config.vm.provision :shell, path: "server/provision.sh", privileged: false
 
   # Hostname
