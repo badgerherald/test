@@ -11,24 +11,24 @@ services:
       - 443:443
     volumes:
       - badgerherald.com-wordpress:/var/www/html 
-      - ./server/favicon.ico:/var/www/html/favicon.ico
       - ./server/nginx/badgerherald.com.conf:/etc/nginx/nginx.conf
       - ./server/nginx/ssl/localhost.crt:/etc/ssl/certs/localhost.crt
       - ./server/nginx/ssl/localhost.key:/etc/ssl/private/localhost.key
     restart: always
 
-  db_node_domain:
+  mariadb:
+    container_name: badgerherald.com-mysql
     image: mariadb
     volumes:
       - badgerherald.com-mysql:/var/lib/mysql:rw
     restart: always
     env_file:
       - server.env
-    container_name: badgerherald.com-mysql
 
   wordpress:
+    container_name: badgerherald.com-wordpress
     depends_on:
-      - db_node_domain
+      - mariadb
     image: wordpress:latest
     expose:
       - 80
@@ -39,8 +39,25 @@ services:
       - badgerherald.com-wordpress:/var/www/html
       - ./server/wp-content:/var/www/html/wp-content/
     environment:
-      WORDPRESS_DB_HOST: db_node_domain:3306
-    container_name: badgerherald.com-wordpress
+      WORDPRESS_DB_HOST: mariadb:3306
+  
+  mysql-cron-backup:
+    container_name: badgerherald.com-backups
+    image: fradelg/mysql-cron-backup
+    depends_on:
+      - mariadb
+    volumes:
+      - ./server/sql/backup:/backup
+    env_file:
+      - server.env
+    environment:
+      - MYSQL_HOST=mariadb
+      - MYSQL_USER=root
+      - MAX_BACKUPS=15
+      - INIT_BACKUP=1
+      # Every day at 03:00
+      - CRON_TIME=0 3 * * *
+    restart: unless-stopped
 
 volumes: 
   badgerherald.com-mysql:

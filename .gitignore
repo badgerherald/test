@@ -6,3 +6,4 @@
 server/log
 server/wp-content
 server/nginx/ssl
+server/sql
