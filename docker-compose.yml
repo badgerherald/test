@@ -23,6 +23,13 @@ services:
       - ./server/sql/install/:/docker-entrypoint-initdb.d
       - badgerherald.com-mysql:/var/lib/mysql:rw
     restart: always
+    expose:
+      - 3306
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_WORDPRESS_USER}
+      MYSQL_PASSWORD: ${MYSQL_WORDPRESS_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_WORDPRESS_DATABASE}
 
   wordpress:
     container_name: badgerherald.com-wordpress
@@ -39,6 +46,7 @@ services:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_USER: ${MYSQL_WORDPRESS_DATABASE}
       WORDPRESS_DB_PASSWORD: ${MYSQL_WORDPRESS_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_WORDPRESS_DATABASE}
 
 volumes: 
   badgerherald.com-mysql:
