@@ -20,6 +20,7 @@ services:
     container_name: badgerherald.com-mysql
     image: mariadb
     volumes:
+      - ./server/sql/install/:/docker-entrypoint-initdb.d
       - badgerherald.com-mysql:/var/lib/mysql:rw
     restart: always
     env_file:
@@ -47,7 +48,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - ./server/sql/backup:/backup
+      - ./server/sql/backups:/backup
     env_file:
       - server.env
     environment:
