@@ -55,6 +55,3 @@ openssl rsa -in $DOMAIN.key.org -out $DOMAIN.key -passin env:PASSPHRASE
 
 # Generate the cert (good for 10 years)
 openssl x509 -req -days 3650 -in $DOMAIN.csr -signkey $DOMAIN.key -out $DOMAIN.crt
-
-sudo cp localhost.key /etc/ssl/private/localhost.key
-sudo cp localhost.crt /etc/ssl/certs/localhost.crt

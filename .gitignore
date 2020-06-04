@@ -1,7 +1,7 @@
 .vagrant
 .DS_Store
 
-*.env
+.env
 
 server/log
 server/wp-content

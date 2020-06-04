@@ -16,8 +16,7 @@ Vagrant.configure("2") do |config|
   SHELL
 
   ## Provision
-  config.vm.provision :shell, path: "server/provision-ssl.sh", args: "192.168.19.69", privileged: false
-  config.vm.provision :shell, path: "server/provision.sh", privileged: false
+  config.vm.provision :shell, path: "server/provision.sh", args: "badgerherald.test", privileged: false
 
   # Hostname
   config.vm.network :private_network, :ip => "192.168.19.69"

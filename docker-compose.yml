@@ -5,15 +5,15 @@ services:
     image: nginx:latest
     container_name: badgerherald.com-nginx
     links:
-        - wordpress
+      - wordpress
     ports:
       - 80:80
       - 443:443
     volumes:
       - badgerherald.com-wordpress:/var/www/html 
       - ./server/nginx/badgerherald.com.conf:/etc/nginx/nginx.conf
-      - ./server/nginx/ssl/localhost.crt:/etc/ssl/certs/localhost.crt
-      - ./server/nginx/ssl/localhost.key:/etc/ssl/private/localhost.key
+      - ./server/nginx/ssl/${SSL_CERTIFICATE_NAME}.crt:/etc/ssl/certs/localhost.crt
+      - ./server/nginx/ssl/${SSL_CERTIFICATE_NAME}.key:/etc/ssl/private/localhost.key
     restart: always
 
   mariadb:
@@ -23,8 +23,6 @@ services:
       - ./server/sql/install/:/docker-entrypoint-initdb.d
       - badgerherald.com-mysql:/var/lib/mysql:rw
     restart: always
-    env_file:
-      - server.env
 
   wordpress:
     container_name: badgerherald.com-wordpress
@@ -34,36 +32,18 @@ services:
     expose:
       - 80
     restart: always
-    env_file:
-      - server.env
     volumes: 
       - badgerherald.com-wordpress:/var/www/html
       - ./server/wp-content:/var/www/html/wp-content/
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
-  
-  mysql-cron-backup:
-    container_name: badgerherald.com-backups
-    image: fradelg/mysql-cron-backup
-    depends_on:
-      - mariadb
-    volumes:
-      - ./server/sql/backups:/backup
-    env_file:
-      - server.env
-    environment:
-      - MYSQL_HOST=mariadb
-      - MYSQL_USER=root
-      - MAX_BACKUPS=15
-      - INIT_BACKUP=1
-      # Every day at 03:00
-      - CRON_TIME=0 3 * * *
-    restart: unless-stopped
+      WORDPRESS_DB_USER: ${MYSQL_WORDPRESS_DATABASE}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_WORDPRESS_PASSWORD}
 
 volumes: 
   badgerherald.com-mysql:
   badgerherald.com-wordpress:
-    
+
 networks:
   default:
     external:
