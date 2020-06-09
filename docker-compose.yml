@@ -42,6 +42,8 @@ services:
     volumes: 
       - badgerherald.com-wordpress:/var/www/html
       - ./server/wp-content:/var/www/html/wp-content/
+      - ${WORDPRESS_UPLOADS_DIR}:/var/www/html/wp-content/uploads
+      - ./server/nginx/app:/var/www/html/app
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_USER: ${MYSQL_WORDPRESS_DATABASE}
@@ -51,6 +53,11 @@ services:
         /* Domain */
         define("WP_HOME","${WORDPRESS_SITE_URL}");
         define("WP_SITEURL","${WORDPRESS_SITE_URL}");
+        define('STRIPE_SK', '${STRIPE_SECRET_KEY}');
+        define('STRIPE_MONTHLY_PLAN', '${STRIPE_MONTHLY_PLAN}');
+        define('STRIPE_SEMESTER_PLAN', '${STRIPE_SEMESTER_PLAN}');
+        define('EXA_APP_URL', '//badgerherald.com/app/');
+
 
 volumes: 
   badgerherald.com-mysql:
