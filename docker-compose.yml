@@ -21,6 +21,7 @@ services:
     image: mariadb
     volumes:
       - ./server/sql/install/:/docker-entrypoint-initdb.d
+      - ./server/sql/my.cnf:/etc/mysql/conf.d/my.cnf
       - badgerherald.com-mysql:/var/lib/mysql:rw
     restart: always
     expose:
@@ -42,8 +43,8 @@ services:
     volumes: 
       - badgerherald.com-wordpress:/var/www/html
       - ./server/wp-content:/var/www/html/wp-content/
-      - ${WORDPRESS_UPLOADS_DIR}:/var/www/html/wp-content/uploads
-      - ./server/nginx/app:/var/www/html/app
+      - ~/badgerherald.com${WORDPRESS_UPLOADS_DIR}:/var/www/html/wp-content/uploads
+      - ./server/app:/var/www/html/app
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_USER: ${MYSQL_WORDPRESS_DATABASE}
